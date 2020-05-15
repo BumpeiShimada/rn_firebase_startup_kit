@@ -1,9 +1,8 @@
 import React, {useState, useContext} from 'react';
-import {withTheme} from 'react-native-paper';
 import styled from 'styled-components/native';
+import useDistinctNavigation from '../../hooks/useDistinctNavigation';
 import UserContext from '../../contexts/UserContext';
 import SnackbarContext from '../../contexts/SnackbarContext';
-import {ScreenProps} from '../../models/screen';
 import {
   LogoutButton,
   LoginForm,
@@ -15,25 +14,22 @@ const Container = styled.View`
   justify-content: center;
 `;
 
-const LoginScreen = ({theme, navigation}: ScreenProps) => {
+const LoginScreen = () => {
+  const user = useContext(UserContext);
+  const navigation = useDistinctNavigation();
+
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
-  const user = useContext(UserContext);
-  const {
-    setMessage,
-    showSnackbar,
-    setLevelAsInfo,
-    setLevelAsError,
-  } = useContext(SnackbarContext);
+  const {setMessage, showSnackbar, setLevelAsInfo} = useContext(
+    SnackbarContext,
+  );
 
   const onSuccess = (message: string) => {
     setLevelAsInfo();
     setMessage(message);
     showSnackbar();
-    navigation.navigate('Home');
+    navigation.navigateToHome();
   };
-
-  const navigateToRegister = () => navigation.navigate('Register');
 
   return (
     <Container>
@@ -42,26 +38,16 @@ const LoginScreen = ({theme, navigation}: ScreenProps) => {
           logout={user.logout(() => onSuccess('👋 Logout successful'))}
           isProcessing={isProcessing}
           setIsProcessing={setIsProcessing}
-          setLevelAsError={setLevelAsError}
-          setMessage={setMessage}
-          showSnackbar={showSnackbar}
         />
       ) : (
         <LoginForm
-          login={user.login(() =>
-            onSuccess('😄 You have successfully logged in!'),
-          )}
-          theme={theme}
+          login={user.login(() => onSuccess('😄 You have successfully logged in!'))}
           isProcessing={isProcessing}
           setIsProcessing={setIsProcessing}
-          setLevelAsError={setLevelAsError}
-          setMessage={setMessage}
-          showSnackbar={showSnackbar}
-          navigateToRegister={navigateToRegister}
         />
       )}
     </Container>
   );
 };
 
-export default withTheme(LoginScreen);
+export default LoginScreen;

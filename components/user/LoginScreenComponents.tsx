@@ -1,6 +1,8 @@
-import React from 'react';
-import {TextInput, Text, Button, Theme} from 'react-native-paper';
+import React, {useContext} from 'react';
+import {TextInput, Text, Button, useTheme} from 'react-native-paper';
 import {Formik} from 'formik';
+import useDistinctNavigation from '../../hooks/useDistinctNavigation';
+import SnackbarContext from '../../contexts/SnackbarContext';
 import {AuthFormValueInterface} from '../../models/authentication';
 import {AuthFormValueValidation} from '../../validations/authentication';
 import {
@@ -12,21 +14,21 @@ import {
   LinkTextSeparater,
 } from '../../components/FormComponents';
 
+interface LogoutButtonProps {
+  logout: (onError: (error: any) => void) => Promise<void>;
+  isProcessing: boolean;
+  setIsProcessing: (isProcessing: boolean) => void;
+}
+
 export const LogoutButton = ({
   logout,
   isProcessing,
   setIsProcessing,
-  setLevelAsError,
-  setMessage,
-  showSnackbar,
-}: {
-  logout: (onError: (error: any) => void) => Promise<void>;
-  isProcessing: boolean;
-  setIsProcessing: (isProcessing: boolean) => void;
-  setLevelAsError: () => void;
-  setMessage: (message: string) => void;
-  showSnackbar: () => void;
-}) => {
+}: LogoutButtonProps) => {
+  const {setMessage, showSnackbar, setLevelAsError} = useContext(
+    SnackbarContext,
+  );
+
   const onError = (error: any) => {
     setIsProcessing(false);
     setLevelAsError();
@@ -50,28 +52,26 @@ export const LogoutButton = ({
   );
 };
 
-export const LoginForm = ({
-  login,
-  theme,
-  isProcessing,
-  setIsProcessing,
-  setLevelAsError,
-  setMessage,
-  showSnackbar,
-  navigateToRegister,
-}: {
+interface LoginFormProps {
   login: (
     values: AuthFormValueInterface,
     onError: (error: any) => void,
   ) => Promise<void>;
-  theme: Theme;
   isProcessing: boolean;
   setIsProcessing: (isProcessing: boolean) => void;
-  setLevelAsError: () => void;
-  setMessage: (message: string) => void;
-  showSnackbar: () => void;
-  navigateToRegister: () => void;
-}) => {
+}
+
+export const LoginForm = ({
+  login,
+  isProcessing,
+  setIsProcessing,
+}: LoginFormProps) => {
+  const theme = useTheme();
+  const navigation = useDistinctNavigation();
+  const {setMessage, showSnackbar, setLevelAsError} = useContext(
+    SnackbarContext,
+  );
+
   const onError = (error: any) => {
     setIsProcessing(false);
     setLevelAsError();
@@ -147,9 +147,9 @@ export const LoginForm = ({
 
           <CentralizingContainer>
             <Text
-              onPress={navigateToRegister}
-              style={{color: theme.colors.text}}>
-              Sign up here →
+              onPress={navigation.navigateToRegister}
+              style={{textDecorationLine: 'underline'}}>
+              Sign up here
             </Text>
           </CentralizingContainer>
         </FormContainer>

@@ -1,10 +1,10 @@
 import React, {useState, useContext} from 'react';
-import {TextInput, Text, Button, withTheme} from 'react-native-paper';
+import {TextInput, Text, Button, useTheme} from 'react-native-paper';
 import styled from 'styled-components/native';
 import {Formik} from 'formik';
+import useDistinctNavigation from '../../hooks/useDistinctNavigation';
 import UserContext from '../../contexts/UserContext';
 import SnackbarContext from '../../contexts/SnackbarContext';
-import {ScreenProps} from '../../models/screen';
 import {AuthFormValueValidation} from '../../validations/authentication';
 import {
   InputFieldSeparater,
@@ -20,10 +20,10 @@ const Container = styled.View`
   justify-content: center;
 `;
 
-const RegisterScreen = ({theme, navigation}: ScreenProps) => {
-  const [isProcessing, setIsProcessing] = useState<boolean>(false);
-
+const RegisterScreen = () => {
   const user = useContext(UserContext);
+  const theme = useTheme();
+  const navigation = useDistinctNavigation();
   const {
     setMessage,
     showSnackbar,
@@ -31,11 +31,13 @@ const RegisterScreen = ({theme, navigation}: ScreenProps) => {
     setLevelAsError,
   } = useContext(SnackbarContext);
 
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+
   const onSuccess = () => {
     setLevelAsInfo();
     setMessage('🎉 You have successfully registered!');
     showSnackbar();
-    navigation.navigate('Home');
+    navigation.navigateToHome();
   };
 
   const onError = (error: any) => {
@@ -117,4 +119,4 @@ const RegisterScreen = ({theme, navigation}: ScreenProps) => {
   );
 };
 
-export default withTheme(RegisterScreen);
+export default RegisterScreen;

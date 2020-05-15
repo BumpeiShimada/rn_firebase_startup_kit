@@ -5,6 +5,7 @@ import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {HOME, USER} from './constants/routeName';
 import useUser from './hooks/useUser';
 import useSnackbar from './hooks/useSnackbar';
 import UserContext from './contexts/UserContext';
@@ -31,13 +32,13 @@ const App = () => {
         <SnackbarContext.Provider value={snackbar}>
           <NavigationContainer>
             <Tab.Navigator
-              initialRouteName="Home"
+              initialRouteName={HOME}
               screenOptions={({route}) => ({
                 tabBarIcon: ({color, size}) => {
                   let iconName = 'home';
 
                   switch (route.name) {
-                    case 'User':
+                    case USER:
                       iconName = 'user';
                       break;
                   }
@@ -51,8 +52,8 @@ const App = () => {
                 activeTintColor: theme.colors.primary,
                 inactiveTintColor: 'gray',
               }}>
-              <Tab.Screen name="Home" component={HomeNavigator} />
-              <Tab.Screen name="User" component={UserNavigator} />
+              <Tab.Screen name={HOME} component={HomeNavigator} />
+              <Tab.Screen name={USER} component={UserNavigator} />
             </Tab.Navigator>
           </NavigationContainer>
         </SnackbarContext.Provider>
