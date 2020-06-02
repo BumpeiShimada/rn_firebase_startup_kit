@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {User} from 'firebase';
 import firebase from '../singletons/firebase';
 import {AuthFormValueInterface} from 'models/authentication';
@@ -26,10 +26,16 @@ function useUser(): UserHook {
   const [userState, setUserState] = useState<User | null>(null);
   const [isMountingAuthState, setIsMountingAuthState] = useState<boolean>(true);
 
-  firebase.auth().onAuthStateChanged(currentUser => {
-    setUserState(currentUser);
-    setIsMountingAuthState(false);
-  });
+  useEffect(() => {
+    const unregisterAuthObserver = firebase
+      .auth()
+      .onAuthStateChanged(currentUser => {
+        setUserState(currentUser);
+        setIsMountingAuthState(false);
+      });
+
+    return unregisterAuthObserver;
+  }, []);
 
   async function register(
     values: AuthFormValueInterface,
