@@ -20,7 +20,7 @@
     "@types/react-navigation": "^3.4.0",
     "@types/styled-components": "^5.0.1",
     "@types/yup": "^0.26.32",
-    "firebase": "^7.10.0",
+    "firebase": "^10.9.0",
     "formik": "^2.1.4",
     "react": "16.9.0",
     "react-native": "0.62.3",
